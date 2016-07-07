@@ -7,6 +7,6 @@
     android:background="#ff33cc"
     android:minHeight="25dp"
     android:minWidth="25dp"
-    android:id="@+id/grid_item_poster_view" >
+    android:id="@+id/grid_item_poster_view">
 
 </TextView>

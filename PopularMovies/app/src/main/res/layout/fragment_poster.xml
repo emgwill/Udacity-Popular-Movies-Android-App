@@ -4,9 +4,15 @@
     android:layout_height="match_parent"
     tools:context="com.udacity.caraher.emma.popularmovies.PosterFragment">
 
-    <ListView
+    <GridView
         android:id="@+id/popular_movies_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:columnWidth="90dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"/>
 
 </FrameLayout>
