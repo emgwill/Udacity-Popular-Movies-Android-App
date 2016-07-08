@@ -1,5 +1,6 @@
 package com.udacity.caraher.emma.popularmovies;
 
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class PosterFragment extends Fragment {
+
+    ImageAdapter imageAdapter;
 
     public PosterFragment() {
     }
@@ -62,12 +69,14 @@ public class PosterFragment extends Fragment {
         GridView gridView = (GridView) rootView.findViewById(R.id.popular_movies_grid);
 
         /* START from https://developer.android.com/guide/topics/ui/layout/gridview.html */
-        gridView.setAdapter(new ImageAdapter(getContext()));
+        imageAdapter = new ImageAdapter(getContext());
+        gridView.setAdapter(imageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(getContext(), "" + position,
+                String title = imageAdapter.getMovieTitle(position);
+                Toast.makeText(getContext(), "" + title,
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -76,12 +85,42 @@ public class PosterFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchMoviesTask extends AsyncTask<Void, Void, MovieClass[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+        private MovieClass[] getMovieDataFromJson(String moviesJsonStr)
+                throws JSONException {
+
+            // These are the names of the JSON objects that need to be extracted.
+            final String OWM_RESULTS = "results";
+            final String OWM_TITLE = "original_title";
+            final String OWM_PLOT = "overview";
+            final String OWM_RATING = "vote_average";
+            final String OWM_DATE = "release_date";
+            final String OWM_POSTER = "poster_path";
+
+            JSONObject moviesJson = new JSONObject(moviesJsonStr);
+            JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
+            int numMovies = moviesArray.length();
+            MovieClass[] resultMovies = new MovieClass[numMovies];
+
+            for (int i = 0; i < numMovies; i++) {
+                JSONObject movieObject = moviesArray.getJSONObject(i);
+                String title = movieObject.get(OWM_TITLE).toString();
+                String plot = movieObject.get(OWM_PLOT).toString();
+                double rating = movieObject.getDouble(OWM_RATING);
+                String date = movieObject.get(OWM_DATE).toString();
+                String poster = movieObject.get(OWM_POSTER).toString();
+
+                resultMovies[i] = new MovieClass(title, plot, rating, date, poster);
+            }
+
+            return resultMovies;
+        }
+
         @Override
-        protected String[] doInBackground(Void... params) {
+        protected MovieClass[] doInBackground(Void... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -149,7 +188,24 @@ public class PosterFragment extends Fragment {
                     }
                 }
             }
+
+            try {
+                return getMovieDataFromJson(moviesJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(MovieClass[] moviesList) {
+            super.onPostExecute(moviesList);
+
+            if (moviesList != null) {
+                imageAdapter.clear();
+                imageAdapter.add(moviesList);
+            }
         }
     }
 }
