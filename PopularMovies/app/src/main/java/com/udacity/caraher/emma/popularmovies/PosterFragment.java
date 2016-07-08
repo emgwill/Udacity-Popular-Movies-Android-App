@@ -1,5 +1,7 @@
 package com.udacity.caraher.emma.popularmovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -71,13 +73,15 @@ public class PosterFragment extends Fragment {
         /* START from https://developer.android.com/guide/topics/ui/layout/gridview.html */
         imageAdapter = new ImageAdapter(getContext());
         gridView.setAdapter(imageAdapter);
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                String title = imageAdapter.getMovieTitle(position);
-                Toast.makeText(getContext(), "" + title,
-                        Toast.LENGTH_SHORT).show();
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MovieClass selectedMovie = imageAdapter.getItemAtPosition(i);
+
+                Context context = view.getContext();
+                Intent detailIntent = new Intent(context, DetailActivity.class)
+                        .putExtra("selectedMovie", selectedMovie);
+                startActivity(detailIntent);
             }
         });
         /* END from https://developer.android.com/guide/topics/ui/layout/gridview.html */

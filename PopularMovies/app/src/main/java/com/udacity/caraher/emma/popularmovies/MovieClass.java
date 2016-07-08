@@ -1,9 +1,11 @@
 package com.udacity.caraher.emma.popularmovies;
 
+import java.io.Serializable;
+
 /**
  * Created by Jemma on 7/7/2016.
  */
-public class MovieClass {
+public class MovieClass implements Serializable {
 
     public String originalTitle;
     public String plotSynopsis;
