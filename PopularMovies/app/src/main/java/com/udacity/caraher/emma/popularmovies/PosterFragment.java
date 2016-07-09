@@ -2,10 +2,12 @@ package com.udacity.caraher.emma.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -138,10 +140,21 @@ public class PosterFragment extends Fragment {
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
 
+                String sortPrefString;
+
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
+                        getString(R.string.pref_sort_popular));
+                if (sortPref.equals(getString(R.string.pref_sort_popular))) {
+                    sortPrefString = "popularity.desc";
+                } else {
+                    sortPrefString = "vote_average.desc";
+                }
+
                 String baseUrl = "https://api.themoviedb.org/3/discover/movie?";
                 Uri builtUri = Uri.parse(baseUrl).buildUpon()
                         .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
-                        .appendQueryParameter("sort_by", "popularity.desc")
+                        .appendQueryParameter("sort_by", sortPrefString)
                         .build();
 
                 URL url = new URL(builtUri.toString());

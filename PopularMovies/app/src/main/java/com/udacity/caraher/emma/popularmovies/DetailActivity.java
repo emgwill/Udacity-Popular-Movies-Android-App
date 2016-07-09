@@ -12,12 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
