@@ -3,7 +3,7 @@ package com.udacity.caraher.emma.popularmovies;
 import java.io.Serializable;
 
 /**
- * Created by Jemma on 7/7/2016.
+ * This class stores all of the information about the movies passed to the details activity.
  */
 public class MovieClass implements Serializable {
 

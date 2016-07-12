@@ -3,7 +3,6 @@ package com.udacity.caraher.emma.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +48,7 @@ public class PosterFragment extends Fragment {
         inflater.inflate(R.menu.movies_fragment, menu);
     }
 
-    public void updateWeather() {
+    public void updateMovies() {
         (new FetchMoviesTask()).execute();
     }
 
@@ -58,7 +56,7 @@ public class PosterFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            updateWeather();
+            updateMovies();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -91,6 +89,12 @@ public class PosterFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovies();
+    }
+
     public class FetchMoviesTask extends AsyncTask<Void, Void, MovieClass[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
@@ -98,7 +102,6 @@ public class PosterFragment extends Fragment {
         private MovieClass[] getMovieDataFromJson(String moviesJsonStr)
                 throws JSONException {
 
-            // These are the names of the JSON objects that need to be extracted.
             final String OWM_RESULTS = "results";
             final String OWM_TITLE = "original_title";
             final String OWM_PLOT = "overview";
@@ -127,24 +130,20 @@ public class PosterFragment extends Fragment {
 
         @Override
         protected MovieClass[] doInBackground(Void... params) {
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string.
             String moviesJsonStr = null;
 
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are avaiable at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecast
-
                 String sortPrefString;
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 String sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
                         getString(R.string.pref_sort_popular));
+
+                Log.e(LOG_TAG, sortPref);
+
                 if (sortPref.equals(getString(R.string.pref_sort_popular))) {
                     sortPrefString = "popularity.desc";
                 } else {
@@ -158,40 +157,29 @@ public class PosterFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
-                Log.v(LOG_TAG, builtUri.toString());
 
-                // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
-                // Read the input stream into a String
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    // Nothing to do.
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
                     buffer.append(line + "\n");
                 }
 
                 if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
                     return null;
                 }
                 moviesJsonStr = buffer.toString();
-                Log.v(LOG_TAG, moviesJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
-                // to parse it.
                 return null;
             } finally {
                 if (urlConnection != null) {

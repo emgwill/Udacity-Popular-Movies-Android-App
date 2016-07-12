@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.udacity.caraher.emma.popularmovies.DetailActivity$DetailFragment"
+    tools:context=".DetailActivity$DetailFragment"
     android:id="@+id/container"
     android:orientation="vertical">
 
@@ -30,26 +30,17 @@
         android:gravity="center_horizontal" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/DetailText"
         android:id="@+id/rating_text"
-        android:layout_marginTop="25dp"
         android:layout_below="@+id/imageView" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/DetailText"
         android:id="@+id/date_text"
-        android:layout_marginTop="25dp"
         android:layout_below="@+id/rating_text" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        style="@style/DetailText"
         android:id="@+id/plot_text"
-        android:layout_marginTop="25dp"
         android:layout_below="@+id/date_text" />
 </RelativeLayout>

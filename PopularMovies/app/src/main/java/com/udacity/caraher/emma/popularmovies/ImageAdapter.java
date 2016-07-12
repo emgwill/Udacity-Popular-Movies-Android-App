@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -61,20 +60,17 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-    // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         if (convertView == null) {
-            // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
             imageView.setLayoutParams(new GridView.LayoutParams(350, 350));
-            //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(6, 6, 6, 6);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        if (movies == null) {
+        if (movies == null || movies[position].getPosterPath() == null) {
             imageView.setImageResource(R.mipmap.ic_launcher);
         } else {
             try {
@@ -84,15 +80,11 @@ public class ImageAdapter extends BaseAdapter {
                         .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
                         .build();
 
-                URL url = new URL(builtUri.toString());
-                Log.v("ImageAdapter", builtUri.toString());
-
                 /* START http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */
                 new ImageLoadTask(builtUri.toString(), imageView).execute();
 
                 /* END http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */
 
-                Log.v("ImageAdapter", "set image drawable");
             } catch (Exception e) {
                 imageView.setImageResource(R.mipmap.ic_launcher);
             }

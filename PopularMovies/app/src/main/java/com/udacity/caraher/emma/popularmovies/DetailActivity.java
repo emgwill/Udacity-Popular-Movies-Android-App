@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Jemma on 7/8/2016.
+ * Shows more detailed information about the selected movie.
  */
 public class DetailActivity extends AppCompatActivity {
 
@@ -79,15 +78,10 @@ public class DetailActivity extends AppCompatActivity {
                             .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
                             .build();
 
-                    URL url = new URL(builtUri.toString());
-                    Log.v("ImageAdapter", builtUri.toString());
-
                 /* START http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */
                     new ImageLoadTask(builtUri.toString(), imageView).execute();
 
                 /* END http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */
-
-                    Log.v("ImageAdapter", "set image drawable");
                 } catch (Exception e) {
                     imageView.setImageResource(R.mipmap.ic_launcher);
                 }
