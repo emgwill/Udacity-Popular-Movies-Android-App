@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,10 +79,16 @@ public class PosterFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MovieClass selectedMovie = imageAdapter.getItemAtPosition(i);
 
-                Context context = view.getContext();
-                Intent detailIntent = new Intent(context, DetailActivity.class)
-                        .putExtra("selectedMovie", selectedMovie);
-                startActivity(detailIntent);
+                if (selectedMovie != null) {
+                    Context context = view.getContext();
+                    Intent detailIntent = new Intent(context, DetailActivity.class)
+                            .putExtra("selectedMovie", selectedMovie);
+                    startActivity(detailIntent);
+                } else {
+
+                    Toast.makeText(getContext(), getString(R.string.no_connection),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
         /* END from https://developer.android.com/guide/topics/ui/layout/gridview.html */
@@ -102,12 +109,12 @@ public class PosterFragment extends Fragment {
         private MovieClass[] getMovieDataFromJson(String moviesJsonStr)
                 throws JSONException {
 
-            final String OWM_RESULTS = "results";
-            final String OWM_TITLE = "original_title";
-            final String OWM_PLOT = "overview";
-            final String OWM_RATING = "vote_average";
-            final String OWM_DATE = "release_date";
-            final String OWM_POSTER = "poster_path";
+            final String OWM_RESULTS = getString(R.string.OWM_RESULTS);
+            final String OWM_TITLE = getString(R.string.OWM_TITLE);
+            final String OWM_PLOT = getString(R.string.OWM_PLOT);
+            final String OWM_RATING = getString(R.string.OWM_RATING);
+            final String OWM_DATE = getString(R.string.OWM_DATE);
+            final String OWM_POSTER = getString(R.string.OWM_POSTER);
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
@@ -145,15 +152,14 @@ public class PosterFragment extends Fragment {
                 Log.e(LOG_TAG, sortPref);
 
                 if (sortPref.equals(getString(R.string.pref_sort_popular))) {
-                    sortPrefString = "popularity.desc";
+                    sortPrefString = getString(R.string.popular_url);
                 } else {
-                    sortPrefString = "vote_average.desc";
+                    sortPrefString = getString(R.string.rated_url);
                 }
 
-                String baseUrl = "https://api.themoviedb.org/3/discover/movie?";
+                String baseUrl = getString(R.string.base_url) + sortPrefString;
                 Uri builtUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
-                        .appendQueryParameter("sort_by", sortPrefString)
+                        .appendQueryParameter(getString(R.string.api), getString(R.string.api_key))
                         .build();
 
                 URL url = new URL(builtUri.toString());

@@ -61,21 +61,23 @@ public class DetailActivity extends AppCompatActivity {
                 ((TextView) rootView.findViewById(R.id.plot_text))
                         .setText(selectedMovie.getPlotSynopsis());
 
-                String ratingText = "Rating: " + Double.toString(selectedMovie.getUserRating());
+                String ratingText = getString(R.string.rating_text)
+                        + Double.toString(selectedMovie.getUserRating());
                 ((TextView) rootView.findViewById(R.id.rating_text))
                         .setText(ratingText);
 
-                String dateText = "Release Date: " + selectedMovie.getReleaseDate();
+                String dateText = getString(R.string.date_text)
+                        + selectedMovie.getReleaseDate();
                 ((TextView) rootView.findViewById(R.id.date_text))
                         .setText(dateText);
 
                 ImageView imageView = ((ImageView) rootView.findViewById(R.id.imageView));
 
                 try {
-                    String baseUrl = "http://image.tmdb.org/t/p/w500"
+                    String baseUrl = getString(R.string.base_poster_url)
                             + selectedMovie.getPosterPath() + "?";
                     Uri builtUri = Uri.parse(baseUrl).buildUpon()
-                            .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
+                            .appendQueryParameter(getString(R.string.api), getString(R.string.api_key))
                             .build();
 
                 /* START http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */

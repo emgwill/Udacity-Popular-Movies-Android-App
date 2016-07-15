@@ -4,10 +4,29 @@
     <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="rating_text">Rating: </string>
+    <string name="date_text">Release Date: </string>
+
     <string name="pref_header_general">General</string>
     <string name="pref_sort_key">sort</string>
     <string name="pref_sort_popular">Most Popular</string>
     <string name="pref_sort_rating">Highest Rated</string>
+    <string name="no_connection">No Network Connection</string>
+
+    <string name="OWM_RESULTS" translatable="false">results</string>
+    <string name="OWM_TITLE" translatable="false">original_title</string>
+    <string name="OWM_PLOT" translatable="false">overview</string>
+    <string name="OWM_RATING" translatable="false">vote_average</string>
+    <string name="OWM_DATE" translatable="false">release_date</string>
+    <string name="OWM_POSTER" translatable="false">poster_path</string>
+
+    <string name="base_url" translatable="false">https://api.themoviedb.org/3/movie</string>
+    <string name="api" translatable="false">api_key</string>
+    <string name="api_key" translatable="false">8d5d5aaec6797f2b46352b8844d64f6f</string>
+    <string name="popular_url" translatable="false">/popular?</string>
+    <string name="rated_url" translatable="false">/top_rated?</string>
+
+    <string name="base_poster_url" translatable="false">http://image.tmdb.org/t/p/w500</string>
 
     <string name="pref_title_sort">Sort movies by:</string>
     <string-array name="pref_sort_titles">

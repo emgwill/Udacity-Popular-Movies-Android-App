@@ -53,7 +53,9 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public MovieClass getItemAtPosition(int position) {
-        return movies[position];
+        if (movies != null)
+            return movies[position];
+        return null;
     }
 
     public long getItemId(int position) {
@@ -74,10 +76,11 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setImageResource(R.mipmap.ic_launcher);
         } else {
             try {
-                String baseUrl = "http://image.tmdb.org/t/p/w500"
+                String baseUrl = convertView.getContext().getResources().getString(R.string.base_poster_url)
                         + movies[position].getPosterPath() + "?";
                 Uri builtUri = Uri.parse(baseUrl).buildUpon()
-                        .appendQueryParameter("api_key", "8d5d5aaec6797f2b46352b8844d64f6f")
+                        .appendQueryParameter(convertView.getContext().getResources().getString(R.string.api),
+                                convertView.getContext().getResources().getString(R.string.api_key))
                         .build();
 
                 /* START http://stackoverflow.com/questions/18953632/how-to-set-image-from-url-for-imageview */
