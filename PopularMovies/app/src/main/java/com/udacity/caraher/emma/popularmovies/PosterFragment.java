@@ -115,6 +115,7 @@ public class PosterFragment extends Fragment {
             final String OWM_RATING = getString(R.string.OWM_RATING);
             final String OWM_DATE = getString(R.string.OWM_DATE);
             final String OWM_POSTER = getString(R.string.OWM_POSTER);
+            final String OWM_ID = getString(R.string.OWM_ID);
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
@@ -128,8 +129,9 @@ public class PosterFragment extends Fragment {
                 double rating = movieObject.getDouble(OWM_RATING);
                 String date = movieObject.get(OWM_DATE).toString();
                 String poster = movieObject.get(OWM_POSTER).toString();
+                String id = movieObject.get(OWM_ID).toString();
 
-                resultMovies[i] = new MovieClass(title, plot, rating, date, poster);
+                resultMovies[i] = new MovieClass(title, id, plot, rating, date, poster);
             }
 
             return resultMovies;

@@ -47,5 +47,12 @@
             style="@style/DetailText"
             android:id="@+id/plot_text"
             android:layout_below="@+id/date_text" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/trailer_list"
+            android:layout_below="@+id/plot_text"/>
     </RelativeLayout>
 </ScrollView>

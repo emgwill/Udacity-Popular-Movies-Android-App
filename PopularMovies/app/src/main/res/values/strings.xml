@@ -19,8 +19,14 @@
     <string name="OWM_RATING" translatable="false">vote_average</string>
     <string name="OWM_DATE" translatable="false">release_date</string>
     <string name="OWM_POSTER" translatable="false">poster_path</string>
+    <string name="OWM_ID" translatable="false">id</string>
+    <string name="OWM_KEY" translatable="false">key</string>
+    <string name="OWM_NAME" translatable="false">name</string>
+
 
     <string name="base_url" translatable="false">https://api.themoviedb.org/3/movie</string>
+    <string name="base_trailer_url_1" translatable="false">http://api.themoviedb.org/3/movie/</string>
+    <string name="base_trailer_url_2" translatable="false">/videos</string>
     <string name="api" translatable="false">api_key</string>
     <string name="api_key" translatable="false">8d5d5aaec6797f2b46352b8844d64f6f</string>
     <string name="popular_url" translatable="false">/popular?</string>
