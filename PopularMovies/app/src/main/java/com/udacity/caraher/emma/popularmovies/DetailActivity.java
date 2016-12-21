@@ -262,13 +262,20 @@ public class DetailActivity extends AppCompatActivity {
                 int numTrailers = trailers.length;
                 for (int i = 0; i < numTrailers; i++) {
                     View view  = inflater.inflate(R.layout.trailer_list_item, listView, false);
+                    String id = trailers[i].getTrailerKey();
+                    view.setTag(R.string.OWM_ID, id);
 
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            String name = (String)((TextView) view.findViewById(R.id.trailer_name)).getText();
-                            Toast.makeText(context, name,
-                                    Toast.LENGTH_SHORT).show();
+                            String id = (String) view.getTag(R.string.OWM_ID);
+
+                            String trailerURL = context.getString(R.string.base_video_url)
+                                    .concat(id);
+
+                            /* referencing http://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent */
+                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailerURL)));
+                            /* referencing http://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent */
                         }
                     });
 
