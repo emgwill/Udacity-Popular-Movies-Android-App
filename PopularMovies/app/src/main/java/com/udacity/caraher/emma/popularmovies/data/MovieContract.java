@@ -60,6 +60,7 @@ public class MovieContract {
         public static final String COLUMN_PLOT = "movie_plot";
         public static final String COLUMN_RATING = "user_rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
+        public static final String COLUMN_FAVORITE = "favorite";
         public static final String COLUMN_POSTER_PATH = "poster_path";
 
         public static Uri buildMovieUri(long id) {

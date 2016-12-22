@@ -68,6 +68,7 @@ public class Utility {
             String plot = getStringFromCursor(cursor, MovieContract.MovieEntry.COLUMN_PLOT);
             String rating = getStringFromCursor(cursor, MovieContract.MovieEntry.COLUMN_RATING);
             String date = getStringFromCursor(cursor, MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+            int favorite = getIntFromCursor(cursor, MovieContract.MovieEntry.COLUMN_FAVORITE);
             String path = getStringFromCursor(cursor, MovieContract.MovieEntry.COLUMN_POSTER_PATH);
 
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_API_ID, apiId);
@@ -75,6 +76,7 @@ public class Utility {
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_PLOT, plot);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_RATING, rating);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_RELEASE_DATE, date);
+            putInContentValue(values, MovieContract.MovieEntry.COLUMN_FAVORITE, date);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_POSTER_PATH, path);
         } finally {
             db.close();
@@ -88,8 +90,20 @@ public class Utility {
         return cursor.getString(index);
     }
 
+    public static int getIntFromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        return cursor.getInt(index);
+    }
+
+
     public static void putInContentValue(ContentValues values,
                                          String columnName, String val) {
+
+        values.put(columnName, val);
+    }
+
+    public static void putInContentValue(ContentValues values,
+                                         String columnName, int val) {
 
         values.put(columnName, val);
     }

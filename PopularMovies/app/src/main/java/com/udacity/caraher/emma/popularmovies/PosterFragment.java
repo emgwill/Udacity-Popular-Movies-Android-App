@@ -144,6 +144,7 @@ public class PosterFragment extends Fragment {
                 Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_PLOT, plot);
                 Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_RATING, rating);
                 Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_RELEASE_DATE, date);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_FAVORITE, 0);
                 Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster);
 
                 Utility.insertValuesInTable(getContext(), tableName, values);
