@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.udacity.caraher.emma.popularmovies.data.MovieContract;
 import com.udacity.caraher.emma.popularmovies.data.MovieDbHelper;
@@ -106,6 +107,43 @@ public class Utility {
                                          String columnName, int val) {
 
         values.put(columnName, val);
+    }
+
+    public static String[] getFavorites(Context context) {
+        Log.v("getting", "favorites");
+
+        String[] apiIds;
+
+        MovieDbHelper dbHelper = new MovieDbHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        try {
+            String query = "SELECT * FROM " + MovieContract.MovieEntry.TABLE_NAME
+                    + " WHERE " + MovieContract.MovieEntry.COLUMN_FAVORITE + " = 1 ORDER BY "
+                    + MovieContract.MovieEntry._ID + " DESC";
+            Cursor cursor = db.rawQuery(query, null);
+
+            cursor.moveToFirst();
+
+            int numFavorites = cursor.getCount();
+            if (numFavorites == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+
+            apiIds = new String[numFavorites];
+            for (int i = 0; i < numFavorites; i++) {
+                String id = getStringFromCursor(cursor, MovieContract.MovieEntry.COLUMN_API_ID);
+                apiIds[i] = id;
+                cursor.moveToNext();
+                Log.v("getting favorites: ", id);
+            }
+        } finally {
+            db.close();
+        }
+
+        return apiIds;
     }
 
 }

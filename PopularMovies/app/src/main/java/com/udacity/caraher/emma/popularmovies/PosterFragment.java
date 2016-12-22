@@ -53,7 +53,16 @@ public class PosterFragment extends Fragment {
     }
 
     public void updateMovies() {
-        (new FetchMoviesTask()).execute();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_popular));
+
+        //if (sortPref.equals(getString(R.string.pref_sort_favorites))) {
+            //imageAdapter.clear();
+            //imageAdapter.add(Utility.getFavorites(getContext()));
+        //} else {
+            (new FetchMoviesTask()).execute();
+        //}
     }
 
     @Override
@@ -96,6 +105,15 @@ public class PosterFragment extends Fragment {
         });
         /* END from https://developer.android.com/guide/topics/ui/layout/gridview.html */
 
+        /*SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_favorites));
+
+        if (sortPref.equals(getString(R.string.pref_sort_favorites))) {
+            imageAdapter.clear();
+            imageAdapter.add(Utility.getFavorites(getContext()));
+        }*/
+
         return rootView;
     }
 
@@ -108,6 +126,7 @@ public class PosterFragment extends Fragment {
     public class FetchMoviesTask extends AsyncTask<Void, Void, String[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+        private String sortPref;
 
         private String[] getMovieDataFromJson(String moviesJsonStr)
                 throws JSONException {
@@ -164,7 +183,7 @@ public class PosterFragment extends Fragment {
                 String sortPrefString;
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
+                sortPref = sharedPref.getString(getString(R.string.pref_sort_key),
                         getString(R.string.pref_sort_popular));
 
                 Log.e(LOG_TAG, sortPref);
@@ -232,6 +251,10 @@ public class PosterFragment extends Fragment {
             super.onPostExecute(movies);
 
             if (movies != null) {
+                if (sortPref.equals(getString(R.string.pref_sort_favorites))) {
+                    movies = Utility.getFavorites(getContext());
+                }
+
                 imageAdapter.clear();
                 imageAdapter.add(movies);
             }

@@ -11,6 +11,7 @@
     <string name="pref_sort_key">sort</string>
     <string name="pref_sort_popular">Most Popular</string>
     <string name="pref_sort_rating">Highest Rated</string>
+    <string name="pref_sort_favorites">My Favorites</string>
     <string name="no_connection">No Network Connection</string>
 
     <string name="OWM_RESULTS" translatable="false">results</string>
@@ -31,7 +32,7 @@
     <string name="base_review_url_2" translatable="false">/reviews</string>
     <string name="base_video_url" translatable="false">https://www.youtube.com/watch?v=</string>
     <string name="api" translatable="false">api_key</string>
-    <string name="api_key" translatable="false">8d5d5aaec6797f2b46352b8844d64f6f</string>
+    <string name="api_key" translatable="false"></string>
     <string name="popular_url" translatable="false">/popular?</string>
     <string name="rated_url" translatable="false">/top_rated?</string>
 
@@ -41,10 +42,12 @@
     <string-array name="pref_sort_titles">
         <item>Most Popular</item>
         <item>Highest Rated</item>
+        <item>My Favorites</item>
     </string-array>
     <string-array name="pref_sort_values">
         <item>Most Popular</item>
         <item>Highest Rated</item>
+        <item>My Favorites</item>
     </string-array>
 
     <string name="pref_header_data_sync">Data &amp; sync</string>
