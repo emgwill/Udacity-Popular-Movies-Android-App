@@ -26,11 +26,19 @@
             android:textStyle="bold"
             android:layout_marginTop="0dp" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/favorite_button"
+            android:layout_below="@+id/title_text"
+            android:onClick="favoriteMovie"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
-            android:layout_below="@+id/title_text"
+            android:layout_below="@+id/favorite_button"
             android:gravity="center_horizontal" />
 
         <TextView

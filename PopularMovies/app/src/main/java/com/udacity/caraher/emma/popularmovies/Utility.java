@@ -15,19 +15,19 @@ import com.udacity.caraher.emma.popularmovies.data.MovieDbHelper;
 public class Utility {
 
     public static void updateValuesInTable(Context context, String tableName,
-                                           ContentValues values, long index) {
+                                           ContentValues values, String index) {
         MovieDbHelper dbHelper = new MovieDbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String id = MovieContract.MovieEntry._ID;
+        String id = MovieContract.MovieEntry.COLUMN_API_ID;
 
         try {
             String query = "SELECT * FROM " + tableName + " WHERE " + id + " = ?";
-            Cursor cursor = db.rawQuery(query, new String[]{Long.toString(index)});
+            Cursor cursor = db.rawQuery(query, new String[]{index});
             try {
                 cursor.moveToFirst();
                 db.update(tableName, values, id + " = ?",
-                        new String[]{Long.toString(index)});
+                        new String[]{index});
             } finally {
                 cursor.close();
             }
@@ -76,7 +76,7 @@ public class Utility {
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_PLOT, plot);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_RATING, rating);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_RELEASE_DATE, date);
-            putInContentValue(values, MovieContract.MovieEntry.COLUMN_FAVORITE, date);
+            putInContentValue(values, MovieContract.MovieEntry.COLUMN_FAVORITE, favorite);
             putInContentValue(values, MovieContract.MovieEntry.COLUMN_POSTER_PATH, path);
         } finally {
             db.close();

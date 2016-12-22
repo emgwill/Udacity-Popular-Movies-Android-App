@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,6 +55,29 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    public void favoriteMovie(View view) {
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("selectedMovie")) {
+            String apiId = (String) intent.getSerializableExtra("selectedMovie");
+            ContentValues values = Utility.getMovieContentValues(this, apiId);
+            int prevValue = values.getAsInteger(MovieContract.MovieEntry.COLUMN_FAVORITE);
+            int updatedValue = (prevValue + 1) % 2;
+            values.remove(MovieContract.MovieEntry.COLUMN_FAVORITE);
+            values.put(MovieContract.MovieEntry.COLUMN_FAVORITE, updatedValue);
+            Utility.updateValuesInTable(this, MovieContract.MovieEntry.TABLE_NAME, values, apiId);
+
+            String favButtonText;
+            if (values.getAsInteger(MovieContract.MovieEntry.COLUMN_FAVORITE) == 0) {
+                favButtonText = "favorite";
+            } else {
+                favButtonText = "unfavorite";
+            }
+
+            ((Button) findViewById(R.id.favorite_button)).setText(favButtonText);
+        }
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -76,6 +100,16 @@ public class DetailActivity extends AppCompatActivity {
 
                 ((TextView) rootView.findViewById(R.id.title_text))
                         .setText(values.getAsString(MovieContract.MovieEntry.COLUMN_TITLE));
+
+
+                String favButtonText;
+                if (values.getAsInteger(MovieContract.MovieEntry.COLUMN_FAVORITE) == 0) {
+                    favButtonText = "favorite";
+                } else {
+                    favButtonText = "unfavorite";
+                }
+
+                ((Button) rootView.findViewById(R.id.favorite_button)).setText(favButtonText);
 
                 ((TextView) rootView.findViewById(R.id.plot_text))
                         .setText(values.getAsString(MovieContract.MovieEntry.COLUMN_PLOT));
