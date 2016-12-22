@@ -54,5 +54,13 @@
             android:layout_height="match_parent"
             android:id="@+id/trailer_list"
             android:layout_below="@+id/plot_text"/>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/review_list"
+            android:layout_below="@+id/trailer_list"/>
     </RelativeLayout>
 </ScrollView>

@@ -109,6 +109,9 @@ public class DetailActivity extends AppCompatActivity {
 
                 LinearLayout listView = (LinearLayout) rootView.findViewById(R.id.trailer_list);
                 (new FetchTrailersTask(getContext(), listView, inflater, apiId)).execute();
+
+                LinearLayout reviewList = (LinearLayout) rootView.findViewById(R.id.review_list);
+                (new FetchReviewsTask(getContext(), reviewList, inflater, apiId)).execute();
             }
 
             return rootView;
@@ -279,6 +282,126 @@ public class DetailActivity extends AppCompatActivity {
                             /* referencing http://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent */
                         }
                     });
+
+                    String name = trailers[i].getTrailerName();
+                    ((TextView) view.findViewById(R.id.trailer_name)).setText(name);
+                    // set item content in view
+                    listView.addView(view);
+                }
+            }
+        }
+    }
+
+    public static class FetchReviewsTask extends AsyncTask<Void, Void, TrailerClass[]> {
+
+        private final String LOG_TAG = FetchTrailersTask.class.getSimpleName();
+        private Context context;
+        private LinearLayout listView;
+        private LayoutInflater inflater;
+        private String mId;
+
+        public FetchReviewsTask(Context thisContext, LinearLayout rootList, LayoutInflater i, String movieId) {
+            context = thisContext;
+            listView = rootList;
+            inflater = i;
+            mId = movieId;
+        }
+
+        private TrailerClass[] getReviewDataFromJson(String trailersJsonStr)
+                throws JSONException {
+
+            final String OWM_RESULTS = context.getString(R.string.OWM_RESULTS);
+            final String OWM_ID = context.getString(R.string.OWM_ID);
+            final String OWM_CONTENT = context.getString(R.string.OWM_CONTENT);
+
+            JSONObject trailersJson = new JSONObject(trailersJsonStr);
+            JSONArray trailersArray = trailersJson.getJSONArray(OWM_RESULTS);
+            int numTrailers = trailersArray.length();
+            TrailerClass[] resultTrailers = new TrailerClass[numTrailers];
+
+            for (int i = 0; i < numTrailers; i++) {
+                JSONObject movieObject = trailersArray.getJSONObject(i);
+                String id = movieObject.get(OWM_ID).toString();
+                String name = movieObject.get(OWM_CONTENT).toString();
+
+                resultTrailers[i] = new TrailerClass(id, null, name);
+            }
+
+            return resultTrailers;
+        }
+
+        @Override
+        protected TrailerClass[] doInBackground(Void... params) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            String moviesJsonStr = null;
+
+            try {
+                String baseUrl = context.getString(R.string.base_trailer_url_1)
+                        .concat(mId).concat(context.getString(R.string.base_review_url_2));
+                Uri builtUri = Uri.parse(baseUrl).buildUpon()
+                        .appendQueryParameter(context.getString(R.string.api),
+                                context.getString(R.string.api_key))
+                        .build();
+
+                URL url = new URL(builtUri.toString());
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+                moviesJsonStr = buffer.toString();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(LOG_TAG, "Error closing stream", e);
+                    }
+                }
+            }
+
+            try {
+                return getReviewDataFromJson(moviesJsonStr);
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(TrailerClass[] trailers) {
+            super.onPostExecute(trailers);
+
+            if (trailers != null) {
+                int numTrailers = trailers.length;
+                for (int i = 0; i < numTrailers; i++) {
+                    View view  = inflater.inflate(R.layout.trailer_list_item, listView, false);
+                    String id = trailers[i].getTrailerKey();
+                    view.setTag(R.string.OWM_ID, id);
 
                     String name = trailers[i].getTrailerName();
                     ((TextView) view.findViewById(R.id.trailer_name)).setText(name);

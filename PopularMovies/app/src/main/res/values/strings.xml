@@ -22,11 +22,13 @@
     <string name="OWM_ID" translatable="false">id</string>
     <string name="OWM_KEY" translatable="false">key</string>
     <string name="OWM_NAME" translatable="false">name</string>
+    <string name="OWM_CONTENT" translatable="false">content</string>
 
 
     <string name="base_url" translatable="false">https://api.themoviedb.org/3/movie</string>
     <string name="base_trailer_url_1" translatable="false">http://api.themoviedb.org/3/movie/</string>
     <string name="base_trailer_url_2" translatable="false">/videos</string>
+    <string name="base_review_url_2" translatable="false">/reviews</string>
     <string name="base_video_url" translatable="false">https://www.youtube.com/watch?v=</string>
     <string name="api" translatable="false">api_key</string>
     <string name="api_key" translatable="false">8d5d5aaec6797f2b46352b8844d64f6f</string>
