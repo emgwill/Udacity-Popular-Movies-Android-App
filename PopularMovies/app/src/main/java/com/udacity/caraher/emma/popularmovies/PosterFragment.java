@@ -1,5 +1,6 @@
 package com.udacity.caraher.emma.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.udacity.caraher.emma.popularmovies.data.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,12 +80,12 @@ public class PosterFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MovieClass selectedMovie = imageAdapter.getItemAtPosition(i);
+                String selectedMovieId = imageAdapter.getItemAtPosition(i).getId();
 
-                if (selectedMovie != null) {
+                if (selectedMovieId != null) {
                     Context context = view.getContext();
                     Intent detailIntent = new Intent(context, DetailActivity.class)
-                            .putExtra("selectedMovie", selectedMovie);
+                            .putExtra("selectedMovie", selectedMovieId);
                     startActivity(detailIntent);
                 } else {
 
@@ -109,6 +112,8 @@ public class PosterFragment extends Fragment {
         private MovieClass[] getMovieDataFromJson(String moviesJsonStr)
                 throws JSONException {
 
+            String tableName = MovieContract.MovieEntry.TABLE_NAME;
+
             final String OWM_RESULTS = getString(R.string.OWM_RESULTS);
             final String OWM_TITLE = getString(R.string.OWM_TITLE);
             final String OWM_PLOT = getString(R.string.OWM_PLOT);
@@ -123,15 +128,26 @@ public class PosterFragment extends Fragment {
             MovieClass[] resultMovies = new MovieClass[numMovies];
 
             for (int i = 0; i < numMovies; i++) {
+                ContentValues values = new ContentValues();
+
                 JSONObject movieObject = moviesArray.getJSONObject(i);
                 String title = movieObject.get(OWM_TITLE).toString();
                 String plot = movieObject.get(OWM_PLOT).toString();
-                double rating = movieObject.getDouble(OWM_RATING);
+                double rate = movieObject.getDouble(OWM_RATING);
+                String rating = Double.toString(movieObject.getDouble(OWM_RATING));
                 String date = movieObject.get(OWM_DATE).toString();
                 String poster = movieObject.get(OWM_POSTER).toString();
                 String id = movieObject.get(OWM_ID).toString();
 
-                resultMovies[i] = new MovieClass(title, id, plot, rating, date, poster);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_API_ID, id);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_TITLE, title);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_PLOT, plot);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_RATING, rating);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_RELEASE_DATE, date);
+                Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster);
+
+                Utility.insertValuesInTable(getContext(), tableName, values);
+                resultMovies[i] = new MovieClass(title, id, plot, rate, date, poster);
             }
 
             return resultMovies;

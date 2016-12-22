@@ -1,5 +1,6 @@
 package com.udacity.caraher.emma.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.udacity.caraher.emma.popularmovies.data.MovieContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,8 +59,6 @@ public class DetailActivity extends AppCompatActivity {
      */
     public static class DetailFragment extends Fragment {
 
-        private MovieClass selectedMovie;
-
         public DetailFragment() {
 
         }
@@ -70,21 +71,22 @@ public class DetailActivity extends AppCompatActivity {
 
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra("selectedMovie")) {
-                selectedMovie = (MovieClass)intent.getSerializableExtra("selectedMovie");
+                String apiId = (String)intent.getSerializableExtra("selectedMovie");
+                ContentValues values = Utility.getMovieContentValues(getContext(), apiId);
 
                 ((TextView) rootView.findViewById(R.id.title_text))
-                        .setText(selectedMovie.getOriginalTitle());
+                        .setText(values.getAsString(MovieContract.MovieEntry.COLUMN_TITLE));
 
                 ((TextView) rootView.findViewById(R.id.plot_text))
-                        .setText(selectedMovie.getPlotSynopsis());
+                        .setText(values.getAsString(MovieContract.MovieEntry.COLUMN_PLOT));
 
                 String ratingText = getString(R.string.rating_text)
-                        + Double.toString(selectedMovie.getUserRating());
+                        + values.getAsString(MovieContract.MovieEntry.COLUMN_RATING);
                 ((TextView) rootView.findViewById(R.id.rating_text))
                         .setText(ratingText);
 
                 String dateText = getString(R.string.date_text)
-                        + selectedMovie.getReleaseDate();
+                        + values.getAsString(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
                 ((TextView) rootView.findViewById(R.id.date_text))
                         .setText(dateText);
 
@@ -92,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 try {
                     String baseUrl = getString(R.string.base_poster_url)
-                            + selectedMovie.getPosterPath() + "?";
+                            + values.getAsString(MovieContract.MovieEntry.COLUMN_POSTER_PATH) + "?";
                     Uri builtUri = Uri.parse(baseUrl).buildUpon()
                             .appendQueryParameter(getString(R.string.api), getString(R.string.api_key))
                             .build();
@@ -105,9 +107,8 @@ public class DetailActivity extends AppCompatActivity {
                     imageView.setImageResource(R.mipmap.ic_launcher);
                 }
 
-                String movieId = selectedMovie.getId();
                 LinearLayout listView = (LinearLayout) rootView.findViewById(R.id.trailer_list);
-                (new FetchTrailersTask(getContext(), listView, inflater, movieId)).execute();
+                (new FetchTrailersTask(getContext(), listView, inflater, apiId)).execute();
             }
 
             return rootView;
