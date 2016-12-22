@@ -2,6 +2,7 @@ package com.udacity.caraher.emma.popularmovies;
 
 /* class from https://developer.android.com/guide/topics/ui/layout/gridview.html */
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.udacity.caraher.emma.popularmovies.data.MovieContract;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,7 +23,7 @@ import java.net.URL;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private int count;
-    private MovieClass movies[];
+    private String movies[];
 
     public ImageAdapter(Context c) {
         mContext = c;
@@ -32,7 +35,7 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void add(MovieClass[] movieList) {
+    public void add(String[] movieList) {
         movies = movieList;
         setCount(movies.length);
         notifyDataSetChanged();
@@ -52,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
         return this.getItem(position);
     }
 
-    public MovieClass getItemAtPosition(int position) {
+    public String getItemAtPosition(int position) {
         if (movies != null)
             return movies[position];
         return null;
@@ -72,12 +75,16 @@ public class ImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        if (movies == null || movies[position].getPosterPath() == null) {
+        if (movies == null || movies[position] == null) {
             imageView.setImageResource(R.mipmap.ic_launcher);
         } else {
             try {
-                String baseUrl = convertView.getContext().getResources().getString(R.string.base_poster_url)
-                        + movies[position].getPosterPath() + "?";
+                ContentValues values = Utility.getMovieContentValues(mContext, movies[position]);
+                String posterPath = values.getAsString(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
+
+
+                String baseUrl = convertView.getContext().getResources()
+                        .getString(R.string.base_poster_url) + posterPath + "?";
                 Uri builtUri = Uri.parse(baseUrl).buildUpon()
                         .appendQueryParameter(convertView.getContext().getResources().getString(R.string.api),
                                 convertView.getContext().getResources().getString(R.string.api_key))

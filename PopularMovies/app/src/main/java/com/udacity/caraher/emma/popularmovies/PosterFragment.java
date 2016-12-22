@@ -80,7 +80,7 @@ public class PosterFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedMovieId = imageAdapter.getItemAtPosition(i).getId();
+                String selectedMovieId = imageAdapter.getItemAtPosition(i);
 
                 if (selectedMovieId != null) {
                     Context context = view.getContext();
@@ -105,11 +105,11 @@ public class PosterFragment extends Fragment {
         updateMovies();
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, MovieClass[]> {
+    public class FetchMoviesTask extends AsyncTask<Void, Void, String[]> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-        private MovieClass[] getMovieDataFromJson(String moviesJsonStr)
+        private String[] getMovieDataFromJson(String moviesJsonStr)
                 throws JSONException {
 
             String tableName = MovieContract.MovieEntry.TABLE_NAME;
@@ -125,7 +125,7 @@ public class PosterFragment extends Fragment {
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
             int numMovies = moviesArray.length();
-            MovieClass[] resultMovies = new MovieClass[numMovies];
+            String[] resultMoviePosters = new String[numMovies];
 
             for (int i = 0; i < numMovies; i++) {
                 ContentValues values = new ContentValues();
@@ -147,14 +147,13 @@ public class PosterFragment extends Fragment {
                 Utility.putInContentValue(values, MovieContract.MovieEntry.COLUMN_POSTER_PATH, poster);
 
                 Utility.insertValuesInTable(getContext(), tableName, values);
-                resultMovies[i] = new MovieClass(title, id, plot, rate, date, poster);
+                resultMoviePosters[i] = id;
             }
-
-            return resultMovies;
+            return resultMoviePosters;
         }
 
         @Override
-        protected MovieClass[] doInBackground(Void... params) {
+        protected String[] doInBackground(Void... params) {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
@@ -228,12 +227,12 @@ public class PosterFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(MovieClass[] moviesList) {
-            super.onPostExecute(moviesList);
+        protected void onPostExecute(String[] movies) {
+            super.onPostExecute(movies);
 
-            if (moviesList != null) {
+            if (movies != null) {
                 imageAdapter.clear();
-                imageAdapter.add(moviesList);
+                imageAdapter.add(movies);
             }
         }
     }
